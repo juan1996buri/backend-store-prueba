@@ -40,24 +40,18 @@ export class ProductController {
     return await this.productService.findOne(id);
   }
 
+  @Roles(TypesRoles.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Put()
   async update(@Body() updateProductDto: UpdateProductDto) {
     return await this.productService.update(updateProductDto);
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'product updated successfull',
-    };
   }
 
-  @Roles('ADMIN')
+  @Roles(TypesRoles.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   async remove(@Param('id') id: number) {
     return await this.productService.remove(id);
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'product deleted successfull',
-    };
   }
 
   //@Roles(TypesRoles.ADMIN)
@@ -65,9 +59,9 @@ export class ProductController {
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(
-    @Body() createProductDto: CreateProductDto,
+    @Body() dto: CreateProductDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.productService.create(createProductDto, file);
+    return this.productService.create(dto, file);
   }
 }

@@ -1,10 +1,16 @@
+import { Type } from 'class-transformer';
 import {
+  IsDecimal,
+  IsEmpty,
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   IsPositive,
   IsString,
+  Matches,
+  Max,
 } from 'class-validator';
 import { CreateCategoryDto } from 'src/category/dto/create-category.dto';
 
@@ -17,9 +23,9 @@ export class CreateProductDto {
   name: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  @IsPositive()
-  price: number;
+  @Matches(/^\d+(\.\d{1,2})?$/)
+  @IsDecimal({ decimal_digits: '2' })
+  price: string;
 
   @IsOptional()
   @IsString()
@@ -36,5 +42,6 @@ export class CreateProductDto {
   description: string;
 
   @IsNotEmpty()
+  @IsObject()
   category: CreateCategoryDto;
 }

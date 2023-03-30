@@ -23,15 +23,17 @@ import { TypesRoles } from 'src/common/emun/tyes-roles';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Roles(TypesRoles.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  //@Roles(TypesRoles.ADMIN)
+  //@UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   async create(
     @Body() dto: CreateCategoryDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.categoryService.create(dto, image);
+    console.log('file', file);
+    console.log('dto', dto);
+    return await this.categoryService.create(dto, file);
   }
 
   @Get()
@@ -44,11 +46,15 @@ export class CategoryController {
     return await this.categoryService.findOne(id);
   }
 
+  @Roles(TypesRoles.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Put()
   async update(@Body() dto: UpdateCategoryDto) {
     return await this.categoryService.update(dto);
   }
 
+  @Roles(TypesRoles.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   async remove(@Param('id') id: number) {
     return await this.categoryService.remove(id);

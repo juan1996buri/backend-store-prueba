@@ -16,12 +16,34 @@ export class ProductService {
     private readonly repository: Repository<Product>,
     private cloudinary: CloudinaryService,
   ) {}
-  async create(createProductDto: CreateProductDto, file: Express.Multer.File) {
-    let image;
-    if (file) image = await this.uploadImageToCloudinary(file);
-    if (image?.url) createProductDto.image = image.url;
-    const newProduct = this.repository.create(createProductDto);
-    return await this.repository.save(newProduct);
+  async create(dto: CreateProductDto, file: Express.Multer.File) {
+    try {
+      let image;
+      if (file) image = await this.uploadImageToCloudinary(file);
+      if (image?.url) dto.image = image.url;
+      const product = await this.repository.findOne({
+        where: { name: dto.name },
+      });
+      if (!product) {
+        const newProduct = this.repository.create(dto);
+        const data = await this.repository.save(newProduct);
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'Producto creado con exito',
+          data,
+        };
+      } else {
+        return {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Este producto ya existe',
+        };
+      }
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   async uploadImageToCloudinary(file: Express.Multer.File) {
@@ -33,10 +55,22 @@ export class ProductService {
   async findAll(pagination: PaginationQueryDto) {
     const queryBuilder = this.repository
       .createQueryBuilder('product')
-      .innerJoinAndSelect('product.category', 'category')
-      .where('category.name LIKE :name', { name: pagination.category });
+      .innerJoinAndSelect('product.category', 'category');
+    //.where('category.name LIKE :name', { name: pagination.category });
     queryBuilder.orderBy('product.name', 'ASC');
-    return paginate<Product>(queryBuilder, pagination);
+
+    if ((await queryBuilder.getRawMany()).length == 0) {
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'No existen productos no encontrado',
+      };
+    }
+    const data = await paginate<Product>(queryBuilder, pagination);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Productos encontrados',
+      data,
+    };
   }
 
   async findOne(id: number) {
@@ -48,8 +82,9 @@ export class ProductService {
       };
     } else {
       return {
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Producto no encontrado',
+        statusCode: HttpStatus.OK,
+        message: 'Producto encontrado',
+        data,
       };
     }
   }

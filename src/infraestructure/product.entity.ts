@@ -17,12 +17,12 @@ export class Product {
   name: string;
 
   @Column()
-  price: number;
+  price: string;
 
   @Column()
   stock: number;
 
-  @Column()
+  @Column({ nullable: false })
   image: string;
 
   @Column()

@@ -9,7 +9,7 @@ export class Category {
   @Column({ unique: true })
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   image: string;
 
   @OneToMany(() => Product, (product) => product.category)
