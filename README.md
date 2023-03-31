@@ -24,8 +24,15 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
+Es importante insertar dos roles , la base de datos que se utilizo fue postgresql 14 
+{
+  id:1
+  name:"ADMIN"
+},
+{
+  id:1
+  name:"USER"
+}
 ## Installation
 
 ```bash
