@@ -24,7 +24,7 @@
 
 ## Description
 
-Es importante insertar dos roles , la base de datos que se utilizo fue postgresql 14 
+Es importante insertar dos roles en la base de datos postgres para el correcto funcionamiento
 {
   id:1
   name:"ADMIN"
