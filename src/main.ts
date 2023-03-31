@@ -4,6 +4,8 @@ import { Logger } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import { setDefaultConfig } from './config/default-config';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +17,8 @@ async function bootstrap() {
   app.enableCors(corsOptions);
 
   app.use(cookieParser());
+  const config = app.get(ConfigService);
+  setDefaultConfig(config);
 
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(
