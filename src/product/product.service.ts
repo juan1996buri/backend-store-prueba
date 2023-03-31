@@ -51,6 +51,30 @@ export class ProductService {
       throw new BadRequestException('Invalid file type.');
     });
   }
+  async update(dto: UpdateProductDto, file: Express.Multer.File) {
+    try {
+      let image;
+      if (file) image = await this.uploadImageToCloudinary(file);
+      if (image?.url) dto.image = image.url;
+      const { affected } = await this.repository.update({ id: dto.id }, dto);
+      if (affected == 1) {
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'Producto actualizado con exito',
+        };
+      } else {
+        return {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Producto no encontrado',
+        };
+      }
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
+  }
 
   async findAll(pagination: PaginationQueryDto) {
     const queryBuilder = this.repository
@@ -85,28 +109,6 @@ export class ProductService {
         statusCode: HttpStatus.OK,
         message: 'Producto encontrado',
         data,
-      };
-    }
-  }
-
-  async update(dto: UpdateProductDto) {
-    try {
-      const { affected } = await this.repository.update({ id: dto.id }, dto);
-      if (affected == 1) {
-        return {
-          statusCode: HttpStatus.OK,
-          message: 'Producto actualizado con exito',
-        };
-      } else {
-        return {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Producto no encontrado',
-        };
-      }
-    } catch (error) {
-      return {
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message,
       };
     }
   }

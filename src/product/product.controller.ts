@@ -40,11 +40,15 @@ export class ProductController {
     return await this.productService.findOne(id);
   }
 
-  @Roles(TypesRoles.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  //@Roles(TypesRoles.ADMIN)
+  //@UseGuards(JwtAuthGuard, RolesGuard)
+  @UseInterceptors(FileInterceptor('image'))
   @Put()
-  async update(@Body() updateProductDto: UpdateProductDto) {
-    return await this.productService.update(updateProductDto);
+  async update(
+    @Body() dto: UpdateProductDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return await this.productService.update(dto, file);
   }
 
   @Roles(TypesRoles.ADMIN)
@@ -63,10 +67,5 @@ export class ProductController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.productService.create(dto, file);
-  }
-
-  //@Post()
-  create_(@Body() dto: CreateProductDto) {
-    console.log(dto);
   }
 }
