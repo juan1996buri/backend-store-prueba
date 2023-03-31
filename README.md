@@ -24,15 +24,20 @@
 
 ## Description
 
+#importante
 Es importante insertar dos roles en la base de datos postgres para el correcto funcionamiento
 {
-  id:1
-  name:"ADMIN"
+id:1
+name:"ADMIN"
 },
 {
-  id:2
-  name:"USER"
+id:2
+name:"USER"
 }
+#importante
+se debe ingresar categorias y productos desde el postman para poder visualizar los datos,
+los productos se debe ingresar con form-data para poder ingresar las imagenes,
+
 ## Installation
 
 ```bash

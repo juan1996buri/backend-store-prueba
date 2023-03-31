@@ -25,6 +25,7 @@ export class AuthService {
     try {
       const payload = { email: user.email, sub: user.id };
       const token = this.jwtService.sign(payload);
+      console.log(token);
       res.cookie('token', token, {
         httpOnly: true,
       });
@@ -44,24 +45,29 @@ export class AuthService {
 
   async me(res: Response, req: Request) {
     const token = req.cookies['token'];
+
     const decodedJwtAccessToken = await this.jwtService.decode(token);
     if (decodedJwtAccessToken === null) {
       res.clearCookie('token');
-      throw new NotFoundException();
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Usuario no existe',
+      };
     }
-    const user = await this.usersService.findUserById(
+    const { data } = await this.usersService.findUserById(
       decodedJwtAccessToken.sub,
     );
 
     return {
       statusCode: HttpStatus.OK,
       message: 'Usuario logeado con exito',
-      data: { user, token },
+      user: data,
+      token,
     };
   }
 
   async signout(req: Request, res: Response) {
     res.clearCookie('token');
-    return res.send({ message: 'Logged out succefully' });
+    return res.send({ message: 'Cerrado sesión' });
   }
 }

@@ -64,4 +64,9 @@ export class ProductController {
   ) {
     return this.productService.create(dto, file);
   }
+
+  //@Post()
+  create_(@Body() dto: CreateProductDto) {
+    console.log(dto);
+  }
 }

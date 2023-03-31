@@ -41,7 +41,7 @@ export class CreateProductDto {
   @IsString()
   description: string;
 
-  @IsNotEmpty()
-  @IsObject()
+  @IsOptional()
+  //@IsObject()
   category: CreateCategoryDto;
 }

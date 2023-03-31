@@ -13,6 +13,9 @@ import { AuthService } from './auth.service';
 import { User } from './decorator/user.decorator';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { LocalAuthGuard } from './guard/local-auth.guard';
+import { RolesGuard } from 'src/roles/guard/roles.guard';
+import { TypesRoles } from 'src/common/emun/tyes-roles';
+import { Roles } from 'src/roles/decorator/roles.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -31,7 +34,8 @@ export class AuthController {
   signout(@Req() req, @Res() res) {
     return this.authService.signout(req, res);
   }
-
+  // @Roles(TypesRoles.ADMIN, TypesRoles.USER)
+  //@UseGuards(JwtAuthGuard, RolesGuard)
   @Get('me')
   async me(@Res({ passthrough: true }) res, @Req() req) {
     return await this.authService.me(res, req);

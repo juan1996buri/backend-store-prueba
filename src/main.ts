@@ -3,10 +3,19 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  const corsOptions = {
+    origin: ['http://localhost:5173'],
+    credentials: true,
+  };
+
+  app.enableCors(corsOptions);
+
+  app.use(cookieParser());
+
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(
     new ValidationPipe({
