@@ -30,7 +30,7 @@ Es importante insertar dos roles en la base de datos postgres para el correcto f
   name:"ADMIN"
 },
 {
-  id:1
+  id:2
   name:"USER"
 }
 ## Installation
